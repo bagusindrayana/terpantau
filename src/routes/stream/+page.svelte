@@ -2,12 +2,12 @@
     import { page } from "$app/stores";
     import { onMount } from "svelte";
 
-    let streamLink;
+    var streamLink = atob($page.url.searchParams.get("stream"));
 
     onMount(() => {
-        streamLink = atob($page.url.searchParams.get("stream"));
         const video = document.querySelector("video");
-        const source = video.getElementsByTagName("source")[0].src;
+        if(video){
+            const source = video.getElementsByTagName("source")[0].src;
 
         // For more options see: https://github.com/sampotts/plyr/#options
         // captions.update is required for captions to work with hls.js
@@ -49,6 +49,7 @@
             // default options with no quality update in case Hls is not supported
             const player = new Plyr(video, defaultOptions);
         }
+        }
 
         function updateQuality(newQuality) {
             window.hls.levels.forEach((level, levelIndex) => {
@@ -68,7 +69,7 @@
 </svelte:head>
 <section class="w-full flex gap-3">
     <div class="w-full md:w-2/3 p-2">
-        {#if streamLink}
+        {#if streamLink != undefined && streamLink != null}
             <video controls crossorigin playsinline class="w-full">
                 <source type="application/x-mpegURL" src={streamLink} />
             </video>
