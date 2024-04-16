@@ -3,7 +3,7 @@
 	import { onMount } from "svelte";
 	import { page } from "$app/stores";
 	import { PUBLIC_API_URL } from "$env/static/public"
-	let curPage = $page.url.searchParams.get("page") || 1;
+	let curPage = 1;
 
 	let categories;
 	let data;
@@ -50,6 +50,7 @@
 	}
 
 	onMount(async () => {
+		curPage = parseInt($page.url.searchParams.get("page")) || 1;
 		await getData('Tol');
 
 		const videos = document.querySelectorAll("video");

@@ -2,9 +2,10 @@
     import { page } from "$app/stores";
     import { onMount } from "svelte";
 
-    const streamLink = atob($page.url.searchParams.get("stream"));
+    let streamLink;
 
     onMount(() => {
+        streamLink = atob($page.url.searchParams.get("stream"));
         const video = document.querySelector("video");
         const source = video.getElementsByTagName("source")[0].src;
 
@@ -67,9 +68,13 @@
 </svelte:head>
 <section class="w-full flex gap-3">
     <div class="w-full md:w-2/3 p-2">
-        <video controls crossorigin playsinline class="w-full">
-            <source type="application/x-mpegURL" src={streamLink} />
-        </video>
+        {#if streamLink}
+            <video controls crossorigin playsinline class="w-full">
+                <source type="application/x-mpegURL" src={streamLink} />
+            </video>
+        {:else}
+            <p>Loading...</p>
+        {/if}
     </div>
     <div class="w-full md:w-1/3 p-2">
         <p>Chat</p>
