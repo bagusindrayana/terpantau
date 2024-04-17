@@ -1,6 +1,8 @@
 <script>
     import { page } from "$app/stores";
     import { onMount } from "svelte";
+    import Plyr from 'plyr';
+    import Hls from 'hls.js';
 
     var streamInfo = JSON.parse(atob($page.url.searchParams.get("stream")));
     var isStream = false;
@@ -14,11 +16,12 @@
         fetch(link, {
             method: "HEAD"
         }).then((response) => {
-            if (response.headers.get("content-type") === "application/octet-stream") {
+            if (response.headers.get("content-type")?.includes("video/")) {
+                isStream = false;
+            } else {
                 isStream = true;
                 initVideo();
-            } else {
-                isStream = false;
+                
             }
         });
     }
@@ -96,7 +99,7 @@
 <section class="w-full p-2">
     <p>{streamInfo?.name}</p>
 </section>
-<section class="w-full flex  flex-col md:flex-row gap-3 flex-wrap">
+<section class="w-full flex  flex-col md:flex-row gap-3">
     <div class="w-full md:w-2/3 p-2">
         {#if streamInfo != undefined && streamInfo != null}
             <video controls crossorigin playsinline class="w-full">

@@ -1,10 +1,34 @@
 <script>
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
+    import Plyr from "plyr";
+    import Hls from "hls.js";
     /**
      * Represents a item with name and stream attribute.
      * @type {Object}
      */
     export let item;
+
+    /**
+     * Represents a item with name and stream attribute.
+     * @type {string|null}
+     */
+    export let source;
+
+    /**
+     * @type {Plyr}
+     */
+    let player;
+
+    /**
+     * @type {Hls}
+     */
+    let hls;
+
+    /**
+     * @type {boolean}
+     */
+    let online = false;
+
     const id = generateUUID();
 
     function generateUUID() {
@@ -36,67 +60,90 @@
     var isStream = false;
 
     /**
-     * 
+     *
      * @param link {string}
      */
-        function checkSteam(link) {
+    function checkSteam(link) {
         //fetch anc cehcn if content type is application/octet-stream or not
         fetch(link, {
-            method: "HEAD"
+            method: "HEAD",
         }).then((response) => {
-            if (response.headers.get("content-type") === "application/octet-stream") {
-                isStream = true;
-                initVideo();
+            if (response.status == 200) {
+                online = true;
+                if (response.headers.get("content-type")?.includes("video/")) {
+                    isStream = false;
+                } else {
+                    isStream = true;
+                    initVideo();
+                }
             } else {
+                online = false;
                 isStream = false;
             }
         });
     }
 
-
     const initVideo = () => {
-        const video = document.querySelector("#video-"+id);
+        /**
+         * @type {HTMLVideoElement|null}
+         */
+        const video = document.querySelector("#video-" + id);
+
         if (video) {
-            const source = video.getElementsByTagName("source")[0].src;
+            const src = video.getElementsByTagName("source")[0].src;
 
             // For more options see: https://github.com/sampotts/plyr/#options
             // captions.update is required for captions to work with hls.js
             const defaultOptions = {};
-            
+
             if (Hls.isSupported() && isStream) {
                 // For more Hls.js options, see https://github.com/dailymotion/hls.js
-                const hls = new Hls();
-                hls.loadSource(source);
+                hls = new Hls();
+                hls.loadSource(src);
 
                 // From the m3u8 playlist, hls parses the manifest and returns
                 // all available video qualities. This is important, in this approach,
                 // we will have one source on the Plyr player.
                 hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-                    
-                    const player = new Plyr(video, defaultOptions);
+                    player = new Plyr(video, defaultOptions);
                 });
                 hls.attachMedia(video);
-                window.hls = hls;
+
+                // window.hls = hls;
             } else {
                 // default options with no quality update in case Hls is not supported
-                const player = new Plyr(video, defaultOptions);
+                player = new Plyr(video, defaultOptions);
             }
         }
 
-        function updateQuality(newQuality) {
-            window.hls.levels.forEach((level, levelIndex) => {
-                if (level.height === newQuality) {
-                    console.log("Found quality match with " + newQuality);
-                    window.hls.currentLevel = levelIndex;
-                }
-            });
-        }
-    }
+        // function updateQuality(newQuality) {
+        //     window.hls.levels.forEach((level, levelIndex) => {
+        //         if (level.height === newQuality) {
+        //             console.log("Found quality match with " + newQuality);
+        //             window.hls.currentLevel = levelIndex;
+        //         }
+        //     });
+        // }
+    };
 
     onMount(() => {
-        console.log(item.stream);
         checkSteam(item.stream);
-        
+
+        setTimeout(() => {
+            if (hls) {
+                hls.stopLoad();
+            }
+        }, 5000);
+    });
+
+    onDestroy(() => {
+        if (player) {
+            player.destroy();
+        }
+
+        if (hls) {
+            hls.stopLoad();
+        }
     });
 </script>
 
@@ -113,7 +160,7 @@
         <div
             class="absolute inset-0 w-full h-full object-cover object-center bg-gray-300"
         >
-            <video id={"video-"+id} crossorigin class=" w-full h-full">
+            <video id={"video-" + id} crossorigin class=" w-full h-full">
                 <source src={item.stream} />
             </video>
         </div>
@@ -121,17 +168,18 @@
         <div
             class="px-8 py-10 relative z-10 w-full border-4 border-gray-200 bg-white opacity-0 hover:opacity-100"
         >
-            <h2
-                class="tracking-widest text-sm title-font font-medium text-indigo-500 mb-1"
-            >
-                {item.name}
+            <h2 class="tracking-widest text-sm title-font font-medium mb-1">
+                {#if online}
+                    <span class="text-green-500">Online</span>
+                {:else}
+                    <span class="text-red-500">Offline</span>
+                {/if}
             </h2>
             <h1 class="title-font text-lg font-medium text-gray-900 mb-3">
-                Shooting Stars
+                {item.name}
             </h1>
             <p class="leading-relaxed">
-                Photo booth fam kinfolk cold-pressed sriracha leggings jianbing
-                microdosing tousled waistcoat.
+                <a href={source}>{source}</a>
             </p>
         </div>
     </a>
