@@ -167,9 +167,13 @@
          * @param data {Object}
          */
         channel.bind("message", function (data) {
-            // console.log(data);
             chatMessages.push(data.message);
             chatMessages = chatMessages;
+            //scroll to bottom list-chats
+            var element = document.getElementById("list-chats");
+            setTimeout(() => {
+                element.scrollTop = element.scrollHeight;
+            }, 200);
         });
     });
 </script>
@@ -182,7 +186,7 @@
 <section class="w-full p-2">
     <p>{streamInfo?.name}</p>
 </section>
-<section class="w-full flex flex-col md:flex-row gap-3">
+<section class="w-full flex flex-col md:flex-row gap-3" style="max-height: 70vh;">
     <div class="w-full md:w-2/3 p-2">
         {#if streamInfo != undefined && streamInfo != null}
             <video controls crossorigin playsinline class="w-full">
@@ -194,11 +198,11 @@
         <!-- <video name="media" class="stream__frame" id="video_stream" autoplay muted playsinline poster="https://vmssamarinda.iconpln.co.id:8443/mt/api/rest/v1/media?session=AYMAfP8KEOFwg8Ds1UExjWk1VvcCCekSFgoU5v9_dWIirrX3qCM7NVtkQOoF1zQaEAK1f5vl_EV7ssdxdYw0vdMiEG4SCpxUgk9ivN4Jozv2qgkqEFBlbWtvdCBTYW1hcmluZGEyIRoQTZ6shHLARv-_iI3yRVfLVyoNYWRtaW5pc3RyYXRvcg&amp;cameraId=4xIx1DOxSE00M040NE9LMddLTsw1MBASEE7vKs8odvBuM3dQEV72LA4A&amp;format=jpeg&amp;frames=all&amp;media=video&amp;quality=high&amp;t=live" src="https://vmssamarinda.iconpln.co.id:8443/mt/api/rest/v1/media?session=AYMAfP8KEOFwg8Ds1UExjWk1VvcCCekSFgoU5v9_dWIirrX3qCM7NVtkQOoF1zQaEAK1f5vl_EV7ssdxdYw0vdMiEG4SCpxUgk9ivN4Jozv2qgkqEFBlbWtvdCBTYW1hcmluZGEyIRoQTZ6shHLARv-_iI3yRVfLVyoNYWRtaW5pc3RyYXRvcg&amp;cameraId=4xIx1DOxSE00M040NE9LMddLTsw1MBASEE7vKs8odvBuM3dQEV72LA4A&amp;format=fmp4&amp;frames=all&amp;media=video&amp;quality=high&amp;t=live" type="video/fmp4">
         </video> -->
     </div>
-    <div class="w-full md:w-1/3 p-2 relative max-h-lvh flex flex-col">
+    <div class="w-full md:w-1/3 p-2 sm:relative flex flex-col">
         <div class="w-full">
             <p>Chat</p>
         </div>
-        <div class="w-full">
+        <div class="w-full overflow-y-auto" style="max-height: 60vh;" id="list-chats">
             <ul class="flex flex-col gap-2">
                 {#each chatMessages as message}
                     <li class="mx-3 bg-gray-100 p-3 rounded-lg">
@@ -207,7 +211,7 @@
                 {/each}
             </ul>
         </div>
-        <div class="absolute bottom-0 right-0 p-2 w-full flex gap-2">
+        <div class="fixed md:absolute w-full bottom-0 right-0 p-2 flex gap-2">
             <input
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
