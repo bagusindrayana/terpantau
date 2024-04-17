@@ -103,6 +103,10 @@
 	<title>TERPANTAU - Pantau CCTV!</title>
 	<meta name="description" content="Pantau CCTV Seluruh Indonesia!" />
 	<link rel="stylesheet" href="https://unpkg.com/plyr@3/dist/plyr.css" />
+
+	<style>
+		.plyr__controls { display: none }
+	</style>
 </svelte:head>
 
 <section class="text-gray-600 body-font">

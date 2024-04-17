@@ -175,9 +175,9 @@
     });
 </script>
 
-<div class="lg:w-1/3 sm:w-1/2 p-4">
+<div class="w-full lg:w-1/3 sm:w-1/2 p-4">
     <a
-        class="flex relative overflow-hidden"
+        class="flex justify-center relative overflow-hidden"
         href="/stream?stream={btoa(JSON.stringify(item))}"
     >
         <!-- <img
@@ -186,7 +186,7 @@
             src="https://dummyimage.com/600x360"
         /> -->
         <div
-            class="absolute inset-0 w-full h-full object-cover object-center bg-gray-300"
+            class="absolute flex justify-center inset-0 w-full h-full object-cover object-center bg-gray-300"
         >
             <video id={"video-" + id} crossorigin class=" w-full h-full">
                 <source src={streamLink} />
