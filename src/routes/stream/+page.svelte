@@ -1,31 +1,35 @@
 <script>
     import { page } from "$app/stores";
     import { onMount } from "svelte";
-    import Plyr from 'plyr';
-    import Hls from 'hls.js';
+    import Plyr from "plyr";
+    import Hls from "hls.js";
+    import { PUBLIC_API_CORS } from "$env/static/public";
 
     var streamInfo = JSON.parse(atob($page.url.searchParams.get("stream")));
     var isStream = false;
+    /**
+     * Represents a item with name and stream attribute.
+     * @type {string|null}
+     */
+    let streamLink = streamInfo.stream;
 
     /**
-     * 
+     *
      * @param link {string}
      */
-        function checkSteam(link) {
+    function checkSteam(link) {
         //fetch anc cehcn if content type is application/octet-stream or not
         fetch(link, {
-            method: "HEAD"
+            method: "GET",
         }).then((response) => {
             if (response.headers.get("content-type")?.includes("video/")) {
                 isStream = false;
             } else {
                 isStream = true;
                 initVideo();
-                
             }
         });
     }
-
 
     const initVideo = () => {
         const video = document.querySelector("video");
@@ -35,7 +39,7 @@
             // For more options see: https://github.com/sampotts/plyr/#options
             // captions.update is required for captions to work with hls.js
             const defaultOptions = {};
-            
+
             if (Hls.isSupported() && isStream) {
                 // For more Hls.js options, see https://github.com/dailymotion/hls.js
                 const hls = new Hls();
@@ -82,28 +86,55 @@
                 }
             });
         }
+    };
+
+    /**
+     *
+     * @param obj {Object}
+     * @returns {boolean}
+     */
+
+    function isEmpty(obj) {
+        for (var prop in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     onMount(() => {
-        
-        checkSteam(streamInfo.stream);
-        
+        let link = streamInfo.stream;
+        if (
+            streamInfo.header &&
+            PUBLIC_API_CORS &&
+            !isEmpty(streamInfo.header)
+        ) {
+            link =
+                PUBLIC_API_CORS +
+                streamInfo.stream +
+                "?headers=" +
+                encodeURIComponent(JSON.stringify(streamInfo.header));
+        }
+        streamLink = link;
+        checkSteam(streamLink);
     });
 </script>
 
 <svelte:head>
     <title>Pantau CCTV - {streamInfo?.name}</title>
-    <meta name="description" content="{streamInfo?.name}" />
+    <meta name="description" content={streamInfo?.name} />
     <link rel="stylesheet" href="https://unpkg.com/plyr@3/dist/plyr.css" />
 </svelte:head>
 <section class="w-full p-2">
     <p>{streamInfo?.name}</p>
 </section>
-<section class="w-full flex  flex-col md:flex-row gap-3">
+<section class="w-full flex flex-col md:flex-row gap-3">
     <div class="w-full md:w-2/3 p-2">
         {#if streamInfo != undefined && streamInfo != null}
             <video controls crossorigin playsinline class="w-full">
-                <source src={streamInfo.stream} />
+                <source src={streamLink} />
             </video>
         {:else}
             <p>Loading...</p>

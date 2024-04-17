@@ -1,5 +1,6 @@
 <script>
     import { onMount, onDestroy } from "svelte";
+    import { PUBLIC_API_CORS } from "$env/static/public"
     import Plyr from "plyr";
     import Hls from "hls.js";
     /**
@@ -7,6 +8,12 @@
      * @type {Object}
      */
     export let item;
+
+    /**
+     * Represents a item with name and stream attribute.
+     * @type {string|null}
+     */
+    let streamLink = item.stream;
 
     /**
      * Represents a item with name and stream attribute.
@@ -66,7 +73,7 @@
     function checkSteam(link) {
         //fetch anc cehcn if content type is application/octet-stream or not
         fetch(link, {
-            method: "HEAD",
+            method: "GET",
         }).then((response) => {
             if (response.status == 200) {
                 online = true;
@@ -126,8 +133,29 @@
         // }
     };
 
+    /**
+     *
+     * @param obj {Object}
+     * @returns {boolean}
+     */
+
+	 function isEmpty(obj) {
+        for (var prop in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     onMount(() => {
-        checkSteam(item.stream);
+        let link = item.stream;
+        if(item.header && PUBLIC_API_CORS && !isEmpty(item.header)){
+            link = PUBLIC_API_CORS + item.stream + "?headers=" + encodeURIComponent(JSON.stringify(item.header));
+        }
+        streamLink = link;
+        checkSteam(link);
 
         setTimeout(() => {
             if (hls) {
@@ -161,7 +189,7 @@
             class="absolute inset-0 w-full h-full object-cover object-center bg-gray-300"
         >
             <video id={"video-" + id} crossorigin class=" w-full h-full">
-                <source src={item.stream} />
+                <source src={streamLink} />
             </video>
         </div>
 
