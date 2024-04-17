@@ -152,7 +152,7 @@
     onMount(() => {
         let link = item.stream;
         if(item.header && PUBLIC_API_CORS && !isEmpty(item.header)){
-            link = PUBLIC_API_CORS + item.stream + "?headers=" + encodeURIComponent(JSON.stringify(item.header));
+            link = PUBLIC_API_CORS + encodeURIComponent(item.stream) + "?headers=" + encodeURIComponent(JSON.stringify(item.header));
         }
         streamLink = link;
         checkSteam(link);
@@ -178,7 +178,7 @@
 <div class="w-full lg:w-1/3 sm:w-1/2 p-4">
     <a
         class="flex justify-center relative overflow-hidden"
-        href="/stream?stream={btoa(JSON.stringify(item))}"
+        href="/stream?stream={btoa(unescape(encodeURIComponent(JSON.stringify(item))))}"
     >
         <!-- <img
             alt="gallery"
@@ -207,7 +207,7 @@
                 {item.name}
             </h1>
             <p class="leading-relaxed">
-                <a href={source}>{source}</a>
+                Sumber : {source}
             </p>
         </div>
     </a>

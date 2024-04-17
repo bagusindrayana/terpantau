@@ -113,8 +113,8 @@
         ) {
             link =
                 PUBLIC_API_CORS +
-                streamInfo.stream +
-                "?headers=" +
+                encodeURIComponent(streamInfo.stream) +
+                "&headers=" +
                 encodeURIComponent(JSON.stringify(streamInfo.header));
         }
         streamLink = link;
