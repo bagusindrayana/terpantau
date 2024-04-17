@@ -53,35 +53,35 @@
 		curPage = parseInt($page.url.searchParams.get("page")) || 1;
 		await getData('Tol');
 
-		const videos = document.querySelectorAll("video");
-		videos.forEach((video) => {
-			const source = video.getElementsByTagName("source")[0].src;
+		// const videos = document.querySelectorAll("video");
+		// videos.forEach((video) => {
+		// 	const source = video.getElementsByTagName("source")[0].src;
 
-			// For more options see: https://github.com/sampotts/plyr/#options
-			// captions.update is required for captions to work with hls.js
-			const defaultOptions = {
-				controls: [],
-			};
+		// 	// For more options see: https://github.com/sampotts/plyr/#options
+		// 	// captions.update is required for captions to work with hls.js
+		// 	const defaultOptions = {
+		// 		controls: [],
+		// 	};
 
-			if (Hls.isSupported()) {
-				// For more Hls.js options, see https://github.com/dailymotion/hls.js
-				const hls = new Hls();
-				hls.loadSource(source);
+		// 	if (Hls.isSupported()) {
+		// 		// For more Hls.js options, see https://github.com/dailymotion/hls.js
+		// 		const hls = new Hls();
+		// 		hls.loadSource(source);
 
-				// From the m3u8 playlist, hls parses the manifest and returns
-				// all available video qualities. This is important, in this approach,
-				// we will have one source on the Plyr player.
-				hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-					// Initialize here
-					const player = new Plyr(video, defaultOptions);
-				});
-				hls.attachMedia(video);
-				window.hls = hls;
-			} else {
-				// default options with no quality update in case Hls is not supported
-				const player = new Plyr(video, defaultOptions);
-			}
-		});
+		// 		// From the m3u8 playlist, hls parses the manifest and returns
+		// 		// all available video qualities. This is important, in this approach,
+		// 		// we will have one source on the Plyr player.
+		// 		hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+		// 			// Initialize here
+		// 			const player = new Plyr(video, defaultOptions);
+		// 		});
+		// 		hls.attachMedia(video);
+		// 		window.hls = hls;
+		// 	} else {
+		// 		// default options with no quality update in case Hls is not supported
+		// 		const player = new Plyr(video, defaultOptions);
+		// 	}
+		// });
 	});
 </script>
 
