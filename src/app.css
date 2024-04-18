@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.video-stream-detail {
+    height: 70vh;
+}
+
+
+/* mobile screen */
+@media (max-width: 768px) {
+    .video-stream-detail {
+        height: 35vh;
+    }
+}

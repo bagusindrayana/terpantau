@@ -60,6 +60,11 @@
 			.then((r) => r.json())
 			.then((responseData) => {
 				data = responseData;
+				if (!data.customCategory) {
+					categories = null;
+				} else {
+					getCategory();
+				}
 			});
 		return Promise.resolve();
 	}
@@ -131,11 +136,7 @@
 		}
 		await getData(selectedWilayah);
 
-		if (!data.customCategory) {
-			categories = null;
-		} else {
-			getCategory();
-		}
+		
 	});
 </script>
 
