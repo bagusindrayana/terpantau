@@ -4,13 +4,15 @@
 
 
 .video-stream-detail {
-    height: 70vh;
+    min-height: 400px !important;
+    height: 70vh !important;
 }
 
 
 /* mobile screen */
 @media (max-width: 768px) {
     .video-stream-detail {
-        height: 35vh;
+        min-height: 300px !important;
+        height: 35vh !important;
     }
 }
