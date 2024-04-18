@@ -1,9 +1,10 @@
 <script>
-	import Item from "../Item.svelte";
+	import Item from "../components/Item.svelte";
 	import { onMount } from "svelte";
 	import { page } from "$app/stores";
 	import { goto } from "$app/navigation";
 	import { PUBLIC_API_URL } from "$env/static/public";
+	import wilayahs from "../wilayahs.json";
 
 	/**
 	 * @type {number}
@@ -24,19 +25,20 @@
 	 * @type {Object|null}
 	 */
 	let data;
-	const wilayahs = [
-		"Tol",
-		"Bali",
-		"Bandung",
-		"BanjarBaru",
-		"Bekasi",
-		"Cirebon",
-		"Jogja",
-		"KabBanjar",
-		"KabOku",
-		"Malang",
-		"Samarinda",
-	];
+	// const wilayahs = [
+	// 	"Tol",
+	// 	"Bali",
+	// 	"Bandung",
+	// 	"BanjarBaru",
+	// 	"Bekasi",
+	// 	"Cirebon",
+	// 	"Jogja",
+	// 	"KabBanjar",
+	// 	"KabOku",
+	// 	"Malang",
+	// 	"Samarinda",
+	// 	"Sleman",
+	// ];
 
 	/**
 	 * @type {string}
@@ -166,7 +168,7 @@
 			<select
 				on:change={selectWilayah}
 				id="wilayah"
-				value={selectedWilayah}
+				bind:value={selectedWilayah}
 				class="bg-gray-50 border border-gray-300"
 			>
 				{#each wilayahs as wilayah}
@@ -236,7 +238,7 @@
 			{/if}
 		</div>
 		<div></div>
-		<div class="flex flex-wrap -m-4">
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 			{#if data}
 				{#each data.data as item}
 					<Item {item} source={data.source} />

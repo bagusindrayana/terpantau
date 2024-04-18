@@ -174,41 +174,24 @@
         }
     });
 </script>
-
-<div class="w-full lg:w-1/3 sm:w-1/2 p-4">
-    <a
-        class="flex justify-center relative overflow-hidden"
-        href="/stream?stream={btoa(unescape(encodeURIComponent(JSON.stringify(item))))}"
-    >
-        <!-- <img
-            alt="gallery"
-            class="absolute inset-0 w-full h-full object-cover object-center"
-            src="https://dummyimage.com/600x360"
-        /> -->
-        <div
-            class="absolute flex justify-center inset-0 w-full h-full object-cover object-center bg-gray-300"
-        >
-            <video id={"video-" + id} crossorigin class=" w-full h-full">
-                <source src={streamLink} />
-            </video>
-        </div>
-
-        <div
-            class="px-8 py-10 relative z-10 w-full border-4 border-gray-200 bg-white opacity-0 hover:opacity-100"
-        >
-            <h2 class="tracking-widest text-sm title-font font-medium mb-1">
-                {#if online}
-                    <span class="text-green-500">Online</span>
-                {:else}
-                    <span class="text-red-500">Offline</span>
-                {/if}
-            </h2>
-            <h1 class="title-font text-lg font-medium text-gray-900 mb-3">
-                {item.name}
-            </h1>
-            <p class="leading-relaxed">
-                Sumber : {source}
-            </p>
-        </div>
-    </a>
-</div>
+<a href="/stream?stream={btoa(unescape(encodeURIComponent(JSON.stringify(item))))}" class="w-full p-4 rounded overflow-hidden shadow-lg">
+    <div class=" w-full h-60 relative flex justify-center items-center bg-gray-500">
+        <video id={"video-" + id} crossorigin class=" w-full h-full">
+            <source src={streamLink} />
+        </video>
+    </div>
+    <div class="px-6 py-4">
+      <div class="font-bold text-xl mb-2">{item.name}</div>
+      <p class="leading-relaxed">
+        Sumber : {source}
+    </p>
+    </div>
+    <div class="px-6 pt-4 pb-2">
+        {#if online}
+        <span class="text-green-500">Online</span>
+    {:else}
+        <span class="text-red-500">Offline</span>
+    {/if}
+      
+    </div>
+</a>
