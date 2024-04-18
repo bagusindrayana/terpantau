@@ -187,9 +187,9 @@
     <p>{streamInfo?.name}</p>
 </section>
 <section class="w-full flex flex-col md:flex-row gap-3" style="max-height: 70vh;">
-    <div class="w-full md:w-2/3 p-2">
+    <div class="w-full h-full relative md:w-2/3 p-2">
         {#if streamInfo != undefined && streamInfo != null}
-            <video controls crossorigin playsinline class="w-full">
+            <video controls crossorigin playsinline class="w-full h-1/3 md:h-full">
                 <source src={streamLink} />
             </video>
         {:else}
