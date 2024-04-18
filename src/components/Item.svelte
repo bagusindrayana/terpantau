@@ -1,6 +1,6 @@
 <script>
     import { onMount, onDestroy } from "svelte";
-    import { PUBLIC_API_CORS } from "$env/static/public"
+    import { PUBLIC_API_CORS } from "$env/static/public";
     import Plyr from "plyr";
     import Hls from "hls.js";
     /**
@@ -102,7 +102,7 @@
             const src = video.getElementsByTagName("source")[0].src;
             //extension check
             const ext = src.split(".").pop();
-            if(ext == "flv"){
+            if (ext == "flv") {
                 if (flvjs.isSupported()) {
                     video.getElementsByTagName("source")[0].remove();
                     flvPlayer = flvjs.createPlayer({
@@ -116,8 +116,7 @@
                     // flvPlayer.play();
                 }
             } else {
-                
-            const defaultOptions = {};
+                const defaultOptions = {};
 
                 if (Hls.isSupported() && isStream) {
                     // For more Hls.js options, see https://github.com/dailymotion/hls.js
@@ -138,10 +137,7 @@
                     player = new Plyr(video, defaultOptions);
                 }
             }
-
-           
         }
-
     };
 
     /**
@@ -150,7 +146,7 @@
      * @returns {boolean}
      */
 
-	 function isEmpty(obj) {
+    function isEmpty(obj) {
         for (var prop in obj) {
             if (Object.prototype.hasOwnProperty.call(obj, prop)) {
                 return false;
@@ -162,8 +158,12 @@
 
     onMount(() => {
         let link = item.stream;
-        if(item.header && PUBLIC_API_CORS && !isEmpty(item.header)){
-            link = PUBLIC_API_CORS + encodeURIComponent(item.stream) + "?headers=" + encodeURIComponent(JSON.stringify(item.header));
+        if (item.header && PUBLIC_API_CORS && !isEmpty(item.header)) {
+            link =
+                PUBLIC_API_CORS +
+                encodeURIComponent(item.stream) +
+                "?headers=" +
+                encodeURIComponent(JSON.stringify(item.header));
         }
         streamLink = link;
         checkStream(link);
@@ -185,31 +185,40 @@
             hls.stopLoad();
         }
 
-        if(flvPlayer){
+        if (flvPlayer) {
             flvPlayer.unload();
             flvPlayer.detachMediaElement();
             flvPlayer.destroy();
         }
     });
 </script>
-<a href="/stream?stream={btoa(unescape(encodeURIComponent(JSON.stringify(item))))}" class="w-full p-4 rounded overflow-hidden shadow-lg">
-    <div class=" w-full h-60 relative flex justify-center items-center bg-gray-500">
-        <video id={"video-" + id} crossorigin  class=" w-full h-full">
+
+<a
+    href="/stream?stream={btoa(
+        unescape(encodeURIComponent(JSON.stringify(item))),
+    )}"
+    class="w-full rounded overflow-hidden shadow-lg"
+>
+    <div
+        class=" w-full h-60 relative flex justify-center items-center bg-gray-500"
+    >
+        <video id={"video-" + id} crossorigin class=" w-full h-full">
             <source src={streamLink} />
         </video>
     </div>
-    <div class="px-6 py-4">
-      <div class="font-bold text-xl mb-2">{item.name}</div>
-      <p class="leading-relaxed">
-        Sumber : {source}
-    </p>
-    </div>
-    <div class="px-6 pt-4 pb-2">
-        {#if online}
-        <span class="text-green-500">Online</span>
-    {:else}
-        <span class="text-red-500">Offline</span>
-    {/if}
-      
+    <div class="w-full p-4">
+        <div class="px-6 py-4">
+            <div class="font-bold text-xl mb-2">{item.name}</div>
+            <p class="leading-relaxed">
+                Sumber : {source}
+            </p>
+        </div>
+        <div class="px-6 pt-4 pb-2">
+            {#if online}
+                <span class="text-green-500">Online</span>
+            {:else}
+                <span class="text-red-500">Offline</span>
+            {/if}
+        </div>
     </div>
 </a>

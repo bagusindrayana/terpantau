@@ -169,7 +169,7 @@
 				bind:value={selectedWilayah}
 				class="bg-gray-50 border border-gray-300"
 			>
-				{#each wilayahs as wilayah}
+				{#each wilayahs.sort() as wilayah}
 					<option value={wilayah}>{wilayah}</option>
 				{/each}
 			</select>

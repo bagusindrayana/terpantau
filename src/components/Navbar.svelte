@@ -27,7 +27,7 @@
       </button>
       {#if dropdownOpen}
         <div data-sveltekit-reload class="dropdown-menu absolute left-0 mt-2 w-56 bg-white border border-gray-200 divide-y divide-gray-100 text-black z-20">
-          {#each wilayahs as wilayah (wilayah)}
+          {#each wilayahs.sort() as wilayah (wilayah)}
             <a href="/?wilayah={wilayah}" class="block px-4 py-2 hover:bg-gray-500 hover:text-white" on:click={() => { 
                 dropdownOpen = false;
                  }}>{wilayah}</a>
