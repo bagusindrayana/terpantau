@@ -51,12 +51,10 @@
 	 */
 	async function getData(wilayah, cat = null) {
 		let url = `${PUBLIC_API_URL}/cctv/${wilayah}?page=${curPage}`;
-		if(cat){
+		if (cat) {
 			url += `&category=${cat}`;
 		}
-		await fetch(
-			`${url}`,
-		)
+		await fetch(`${url}`)
 			.then((r) => r.json())
 			.then((responseData) => {
 				data = responseData;
@@ -135,7 +133,6 @@
 		} else {
 		}
 		await getData(selectedWilayah);
-
 		
 	});
 </script>
@@ -239,7 +236,7 @@
 			{/if}
 		</div>
 		<div></div>
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+		<div data-sveltekit-reload class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 			{#if data}
 				{#each data.data as item}
 					<Item {item} source={data.source} />

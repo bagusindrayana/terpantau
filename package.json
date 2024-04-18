@@ -24,6 +24,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"flv.js": "^1.6.2",
 		"hls.js": "^1.5.8",
 		"plyr": "^3.7.8",
 		"pusher-js": "^8.4.0-rc2"

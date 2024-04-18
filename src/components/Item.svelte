@@ -26,6 +26,8 @@
      */
     let player;
 
+    let flvPlayer;
+
     /**
      * @type {Hls}
      */
@@ -70,7 +72,7 @@
      *
      * @param link {string}
      */
-    function checkSteam(link) {
+    function checkStream(link) {
         //fetch anc cehcn if content type is application/octet-stream or not
         fetch(link, {
             method: "GET",
@@ -98,39 +100,48 @@
 
         if (video) {
             const src = video.getElementsByTagName("source")[0].src;
-
-            // For more options see: https://github.com/sampotts/plyr/#options
-            // captions.update is required for captions to work with hls.js
+            //extension check
+            const ext = src.split(".").pop();
+            if(ext == "flv"){
+                if (flvjs.isSupported()) {
+                    video.getElementsByTagName("source")[0].remove();
+                    flvPlayer = flvjs.createPlayer({
+                        type: "flv",
+                        isLive: true,
+                        hasAudio: false,
+                        url: src,
+                    });
+                    flvPlayer.attachMediaElement(video);
+                    flvPlayer.load();
+                    // flvPlayer.play();
+                }
+            } else {
+                
             const defaultOptions = {};
 
-            if (Hls.isSupported() && isStream) {
-                // For more Hls.js options, see https://github.com/dailymotion/hls.js
-                hls = new Hls();
-                hls.loadSource(src);
+                if (Hls.isSupported() && isStream) {
+                    // For more Hls.js options, see https://github.com/dailymotion/hls.js
+                    hls = new Hls();
+                    hls.loadSource(src);
 
-                // From the m3u8 playlist, hls parses the manifest and returns
-                // all available video qualities. This is important, in this approach,
-                // we will have one source on the Plyr player.
-                hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                    // From the m3u8 playlist, hls parses the manifest and returns
+                    // all available video qualities. This is important, in this approach,
+                    // we will have one source on the Plyr player.
+                    hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                        player = new Plyr(video, defaultOptions);
+                    });
+                    hls.attachMedia(video);
+
+                    // window.hls = hls;
+                } else {
+                    // default options with no quality update in case Hls is not supported
                     player = new Plyr(video, defaultOptions);
-                });
-                hls.attachMedia(video);
-
-                // window.hls = hls;
-            } else {
-                // default options with no quality update in case Hls is not supported
-                player = new Plyr(video, defaultOptions);
+                }
             }
+
+           
         }
 
-        // function updateQuality(newQuality) {
-        //     window.hls.levels.forEach((level, levelIndex) => {
-        //         if (level.height === newQuality) {
-        //             console.log("Found quality match with " + newQuality);
-        //             window.hls.currentLevel = levelIndex;
-        //         }
-        //     });
-        // }
     };
 
     /**
@@ -155,13 +166,14 @@
             link = PUBLIC_API_CORS + encodeURIComponent(item.stream) + "?headers=" + encodeURIComponent(JSON.stringify(item.header));
         }
         streamLink = link;
-        checkSteam(link);
+        checkStream(link);
 
         setTimeout(() => {
-            if (hls) {
-                hls.stopLoad();
-            }
-        }, 5000);
+            // if (hls) {
+            //     hls.stopLoad();
+            // }
+            checkStream(link);
+        }, 500);
     });
 
     onDestroy(() => {
@@ -172,11 +184,17 @@
         if (hls) {
             hls.stopLoad();
         }
+
+        if(flvPlayer){
+            flvPlayer.unload();
+            flvPlayer.detachMediaElement();
+            flvPlayer.destroy();
+        }
     });
 </script>
 <a href="/stream?stream={btoa(unescape(encodeURIComponent(JSON.stringify(item))))}" class="w-full p-4 rounded overflow-hidden shadow-lg">
     <div class=" w-full h-60 relative flex justify-center items-center bg-gray-500">
-        <video id={"video-" + id} crossorigin class=" w-full h-full">
+        <video id={"video-" + id} crossorigin  class=" w-full h-full">
             <source src={streamLink} />
         </video>
     </div>

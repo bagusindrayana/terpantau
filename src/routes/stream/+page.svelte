@@ -3,7 +3,7 @@
     import { onMount } from "svelte";
     import Plyr from "plyr";
     import Hls from "hls.js";
-    import { PUBLIC_API_CORS,PUBLIC_API_LIVECHAT } from "$env/static/public";
+    import { PUBLIC_API_CORS, PUBLIC_API_LIVECHAT } from "$env/static/public";
     import Pusher from "pusher-js";
 
     var streamInfo = JSON.parse(atob($page.url.searchParams.get("stream")));
@@ -43,45 +43,64 @@
         if (video) {
             const source = video.getElementsByTagName("source")[0].src;
 
-            // For more options see: https://github.com/sampotts/plyr/#options
-            // captions.update is required for captions to work with hls.js
-            const defaultOptions = {};
-
-            if (Hls.isSupported() && isStream) {
-                // For more Hls.js options, see https://github.com/dailymotion/hls.js
-                const hls = new Hls();
-                hls.loadSource(source);
-
-                // From the m3u8 playlist, hls parses the manifest and returns
-                // all available video qualities. This is important, in this approach,
-                // we will have one source on the Plyr player.
-                hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-                    // Transform available levels into an array of integers (height values).
-                    const availableQualities = hls.levels.map((l) => l.height);
-
-                    // Add new qualities to option
-                    defaultOptions.quality = {
-                        default: availableQualities[0],
-                        options: availableQualities,
-                        // this ensures Plyr to use Hls to update quality level
-                        forced: true,
-                        onChange: (e) => updateQuality(e),
-                    };
-
-                    defaultOptions.captions = {
-                        active: true,
-                        language: "auto",
-                        update: false,
-                    };
-
-                    // Initialize here
-                    const player = new Plyr(video, defaultOptions);
-                });
-                hls.attachMedia(video);
-                window.hls = hls;
+            //extension check
+            const ext = source.split(".").pop();
+            if (ext == "flv") {
+                if (flvjs.isSupported()) {
+                    video.getElementsByTagName("source")[0].remove();
+                    var flvPlayer = flvjs.createPlayer({
+                        type: "flv",
+                        isLive: true,
+                        hasAudio: false,
+                        url: source,
+                    });
+                    flvPlayer.attachMediaElement(video);
+                    flvPlayer.load();
+                    // flvPlayer.play();
+                }
             } else {
-                // default options with no quality update in case Hls is not supported
-                const player = new Plyr(video, defaultOptions);
+                // For more options see: https://github.com/sampotts/plyr/#options
+                // captions.update is required for captions to work with hls.js
+                const defaultOptions = {};
+
+                if (Hls.isSupported() && isStream) {
+                    // For more Hls.js options, see https://github.com/dailymotion/hls.js
+                    const hls = new Hls();
+                    hls.loadSource(source);
+
+                    // From the m3u8 playlist, hls parses the manifest and returns
+                    // all available video qualities. This is important, in this approach,
+                    // we will have one source on the Plyr player.
+                    hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                        // Transform available levels into an array of integers (height values).
+                        const availableQualities = hls.levels.map(
+                            (l) => l.height,
+                        );
+
+                        // Add new qualities to option
+                        defaultOptions.quality = {
+                            default: availableQualities[0],
+                            options: availableQualities,
+                            // this ensures Plyr to use Hls to update quality level
+                            forced: true,
+                            onChange: (e) => updateQuality(e),
+                        };
+
+                        defaultOptions.captions = {
+                            active: true,
+                            language: "auto",
+                            update: false,
+                        };
+
+                        // Initialize here
+                        const player = new Plyr(video, defaultOptions);
+                    });
+                    hls.attachMedia(video);
+                    window.hls = hls;
+                } else {
+                    // default options with no quality update in case Hls is not supported
+                    const player = new Plyr(video, defaultOptions);
+                }
             }
         }
 
@@ -119,7 +138,7 @@
     function submitChat() {
         const cm = document.getElementById("chat-message");
         if (cm) {
-            const url = PUBLIC_API_LIVECHAT+"/send-message";
+            const url = PUBLIC_API_LIVECHAT + "/send-message";
             fetch(url, {
                 method: "POST",
                 headers: {
@@ -186,10 +205,18 @@
 <section class="w-full p-2">
     <p>{streamInfo?.name}</p>
 </section>
-<section class="w-full flex flex-col md:flex-row gap-3" style="max-height: 70vh;">
-    <div class="w-full h-full relative md:w-2/3 p-2">
+<section
+    class="w-full flex flex-col md:flex-row gap-3"
+    style="max-height: 70vh;"
+>
+    <div class="w-full h-full relative md:w-2/3 p-2 bg-black">
         {#if streamInfo != undefined && streamInfo != null}
-            <video controls crossorigin playsinline class="w-full h-1/3 md:h-full video-stream-detail">
+            <video
+                controls
+                crossorigin
+                playsinline
+                class="w-full  video-stream-detail"
+            >
                 <source src={streamLink} />
             </video>
         {:else}
@@ -202,7 +229,11 @@
         <div class="w-full">
             <p>Chat</p>
         </div>
-        <div class="w-full overflow-y-auto" style="max-height: 60vh;" id="list-chats">
+        <div
+            class="w-full overflow-y-auto"
+            style="max-height: 60vh;"
+            id="list-chats"
+        >
             <ul class="flex flex-col gap-2">
                 {#each chatMessages as message}
                     <li class="mx-3 bg-gray-100 p-3 rounded-lg">
