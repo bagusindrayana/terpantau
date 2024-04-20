@@ -4,15 +4,11 @@
     import Plyr from "plyr";
     import Hls from "hls.js";
     import { PUBLIC_API_CORS, PUBLIC_API_LIVECHAT } from "$env/static/public";
+    import Player from "../../../components/Player.svelte";
     import Pusher from "pusher-js";
 
     var streamInfo = JSON.parse(atob($page.url.searchParams.get("stream")));
-    var isStream = false;
-    /**
-     * Represents a item with name and stream attribute.
-     * @type {string|null}
-     */
-    let streamLink = streamInfo.stream;
+
 
     /**
      * Represents a chat message.
@@ -20,114 +16,7 @@
      */
     let chatMessages = [];
 
-    /**
-     *
-     * @param link {string}
-     */
-    function checkSteam(link) {
-        //fetch anc cehcn if content type is application/octet-stream or not
-        fetch(link, {
-            method: "GET",
-        }).then((response) => {
-            if (response.headers.get("content-type")?.includes("video/")) {
-                isStream = false;
-            } else {
-                isStream = true;
-                initVideo();
-            }
-        });
-    }
-
-    const initVideo = () => {
-        const video = document.querySelector("video");
-        if (video) {
-            const source = video.getElementsByTagName("source")[0].src;
-
-            //extension check
-            const ext = source.split(".").pop();
-            if (ext == "flv") {
-                if (flvjs.isSupported()) {
-                    video.getElementsByTagName("source")[0].remove();
-                    var flvPlayer = flvjs.createPlayer({
-                        type: "flv",
-                        isLive: true,
-                        hasAudio: false,
-                        url: source,
-                    });
-                    flvPlayer.attachMediaElement(video);
-                    flvPlayer.load();
-                    // flvPlayer.play();
-                }
-            } else {
-                // For more options see: https://github.com/sampotts/plyr/#options
-                // captions.update is required for captions to work with hls.js
-                const defaultOptions = {};
-
-                if (Hls.isSupported() && isStream) {
-                    // For more Hls.js options, see https://github.com/dailymotion/hls.js
-                    const hls = new Hls();
-                    hls.loadSource(source);
-
-                    // From the m3u8 playlist, hls parses the manifest and returns
-                    // all available video qualities. This is important, in this approach,
-                    // we will have one source on the Plyr player.
-                    hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-                        // Transform available levels into an array of integers (height values).
-                        const availableQualities = hls.levels.map(
-                            (l) => l.height,
-                        );
-
-                        // Add new qualities to option
-                        defaultOptions.quality = {
-                            default: availableQualities[0],
-                            options: availableQualities,
-                            // this ensures Plyr to use Hls to update quality level
-                            forced: true,
-                            onChange: (e) => updateQuality(e),
-                        };
-
-                        defaultOptions.captions = {
-                            active: true,
-                            language: "auto",
-                            update: false,
-                        };
-
-                        // Initialize here
-                        const player = new Plyr(video, defaultOptions);
-                    });
-                    hls.attachMedia(video);
-                    window.hls = hls;
-                } else {
-                    // default options with no quality update in case Hls is not supported
-                    const player = new Plyr(video, defaultOptions);
-                }
-            }
-        }
-
-        function updateQuality(newQuality) {
-            window.hls.levels.forEach((level, levelIndex) => {
-                if (level.height === newQuality) {
-                    console.log("Found quality match with " + newQuality);
-                    window.hls.currentLevel = levelIndex;
-                }
-            });
-        }
-    };
-
-    /**
-     *
-     * @param obj {Object}
-     * @returns {boolean}
-     */
-    function isEmpty(obj) {
-        for (var prop in obj) {
-            if (Object.prototype.hasOwnProperty.call(obj, prop)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
+    
 
     //generate channel name based streamInfo.stream, remove http and symbol
 
@@ -160,21 +49,7 @@
     }
 
     onMount(() => {
-        let link = streamInfo.stream;
-        if (
-            streamInfo.header &&
-            PUBLIC_API_CORS &&
-            !isEmpty(streamInfo.header)
-        ) {
-            link =
-                PUBLIC_API_CORS +
-                encodeURIComponent(streamInfo.stream) +
-                "&headers=" +
-                encodeURIComponent(JSON.stringify(streamInfo.header));
-        }
-        streamLink = link;
-        checkSteam(streamLink);
-
+        
         var pusher = new Pusher("3d6be57188b3295f4ddd", {
             cluster: "ap1",
         });
@@ -207,23 +82,25 @@
 </section>
 <section
     class="w-full flex flex-col md:flex-row gap-3"
-    style="max-height: 70vh;"
+    style="height: 70vh;"
 >
-    <div class="w-full h-full relative md:w-2/3 p-2 bg-black">
-        {#if streamInfo != undefined && streamInfo != null}
+    <div class="w-full h-full relative md:w-2/3 p-2 bg-black flex justify-center items-center  video-stream-detail">
+        <!-- {#if streamInfo != undefined && streamInfo != null}
             <video
                 controls
                 crossorigin
                 playsinline
-                class="w-full  video-stream-detail"
+                class="w-full  "
             >
                 <source src={streamLink} />
             </video>
         {:else}
             <p>Loading...</p>
-        {/if}
+        {/if} -->
         <!-- <video name="media" class="stream__frame" id="video_stream" autoplay muted playsinline poster="https://vmssamarinda.iconpln.co.id:8443/mt/api/rest/v1/media?session=AYMAfP8KEOFwg8Ds1UExjWk1VvcCCekSFgoU5v9_dWIirrX3qCM7NVtkQOoF1zQaEAK1f5vl_EV7ssdxdYw0vdMiEG4SCpxUgk9ivN4Jozv2qgkqEFBlbWtvdCBTYW1hcmluZGEyIRoQTZ6shHLARv-_iI3yRVfLVyoNYWRtaW5pc3RyYXRvcg&amp;cameraId=4xIx1DOxSE00M040NE9LMddLTsw1MBASEE7vKs8odvBuM3dQEV72LA4A&amp;format=jpeg&amp;frames=all&amp;media=video&amp;quality=high&amp;t=live" src="https://vmssamarinda.iconpln.co.id:8443/mt/api/rest/v1/media?session=AYMAfP8KEOFwg8Ds1UExjWk1VvcCCekSFgoU5v9_dWIirrX3qCM7NVtkQOoF1zQaEAK1f5vl_EV7ssdxdYw0vdMiEG4SCpxUgk9ivN4Jozv2qgkqEFBlbWtvdCBTYW1hcmluZGEyIRoQTZ6shHLARv-_iI3yRVfLVyoNYWRtaW5pc3RyYXRvcg&amp;cameraId=4xIx1DOxSE00M040NE9LMddLTsw1MBASEE7vKs8odvBuM3dQEV72LA4A&amp;format=fmp4&amp;frames=all&amp;media=video&amp;quality=high&amp;t=live" type="video/fmp4">
         </video> -->
+        <Player streamInfo={streamInfo}  preview={true} id={"stream"}/>
+        
     </div>
     <div class="w-full md:w-1/3 p-2 sm:relative flex flex-col">
         <div class="w-full">

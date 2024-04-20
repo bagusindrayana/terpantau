@@ -1,7 +1,7 @@
 <script>
     import { onMount, onDestroy } from "svelte";
-    import { PUBLIC_API_CORS } from "$env/static/public";
-    import Player from "./Player.svelte";
+    import { PUBLIC_API_CORS,PUBLIC_API_THUMBNAIL } from "$env/static/public";
+    // import Player from "./Player.svelte";
     /**
      * Represents a item with name and stream attribute.
      * @type {Object}
@@ -94,7 +94,8 @@
         <!-- <video id={"video-" + id} crossorigin class=" w-full h-full">
             <source src={streamLink} />
         </video> -->
-        <Player streamInfo={item}  preview={true} id={id}/>
+        <!-- <Player streamInfo={item}  preview={true} id={id}/> -->
+        <img src="{PUBLIC_API_THUMBNAIL+encodeURIComponent(item.stream)}" class="w-full h-full"/>
     </div>
     <div class="w-full p-4">
         <div class="px-6 py-4">

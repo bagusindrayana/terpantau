@@ -195,22 +195,20 @@
     });
 </script>
 
-<div class="w-full h-full relative flex justify-center items-center">
-    {#if streamInfo != undefined && streamInfo != null && streamLink != undefined && streamLink != null}
-        <!-- {#if streamInfo.type == "image"}
-            <img src={streamLink} alt="stream image" class="w-full h-full" />
+{#if streamInfo != undefined && streamInfo != null && streamLink != undefined && streamLink != null}
+        {#if streamInfo.type == "image"}
+            <img src={streamLink} alt="stream image" class="w-full video-stream-detail" />
         {:else}
             <video id="video-{id}"
                 controls
                 crossorigin="true"
                 playsinline
-                class="w-full h-full"
+                class="w-full video-stream-detail"
             >
                 <source src={streamLink} />
             </video>
-        {/if} -->
-        <img src="http://localhost:8111/get?video_url={encodeURIComponent(streamLink)}" class="w-full h-full"/>
+        {/if}
+       
     {:else}
         <p>Loading...</p>
     {/if}
-</div>

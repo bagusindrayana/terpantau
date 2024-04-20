@@ -4,7 +4,7 @@
 
 
 .video-stream-detail {
-    min-height: 400px !important;
+    /* min-height: 400px !important; */
     height: 70vh !important;
 }
 
@@ -12,7 +12,7 @@
 /* mobile screen */
 @media (max-width: 768px) {
     .video-stream-detail {
-        min-height: 300px !important;
+        /* min-height: 300px !important; */
         height: 35vh !important;
     }
 }
