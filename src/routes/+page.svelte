@@ -5,6 +5,7 @@
 	import { goto } from "$app/navigation";
 	import { PUBLIC_API_URL } from "$env/static/public";
 	import wilayahs from "../wilayahs.json";
+	import Navbar from "../components/Navbar.svelte";
 
 	/**
 	 * @type {number}
@@ -149,101 +150,104 @@
 	</style>
 </svelte:head>
 
-<section class="text-gray-600 body-font">
-	<div class="container px-5 py-12 md:py-24 mx-auto">
-		<div class="flex flex-col text-center w-full mb-10 md:mb-20">
-			<h1
-				class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900"
-			>
-				Terpantau! - Pantau CCTV
-			</h1>
-			<p class="lg:w-2/3 mx-auto leading-relaxed text-base">
-				stream CCTV bersumber dari website pemerintah kota maupun
-				provinsi indonesia yang tersedia secara publik.
-			</p>
-		</div>
-		<div class="w-full flex justify-center mb-3 md:mb-6">
-			<select
-				on:change={selectWilayah}
-				id="wilayah"
-				bind:value={selectedWilayah}
-				class="bg-gray-50 border border-gray-300"
-			>
-				{#each wilayahs.sort() as wilayah}
-					<option value={wilayah}>{wilayah}</option>
-				{/each}
-			</select>
-		</div>
-		<div
-			class="w-full flex flex-row justify-center items-center mb-10 md:mb-20"
-		>
-			{#if data && data.paginate}
-				<nav
-					class="isolate inline-flex -space-x-px rounded-md shadow-sm"
-					aria-label="Pagination"
+<main>
+	<Navbar/>
+	<section class="text-gray-600 body-font">
+		<div class="container px-5 py-12 md:py-24 mx-auto">
+			<div class="flex flex-col text-center w-full mb-10 md:mb-20">
+				<h1
+					class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900"
 				>
-					<button
-						on:click={prev}
-						class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-					>
-						<span class="sr-only">Previous</span>
-						<svg
-							class="h-5 w-5"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-							aria-hidden="true"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-								clip-rule="evenodd"
-							/>
-						</svg>
-					</button>
-
-					<button
-						on:click={next}
-						class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-					>
-						<span class="sr-only">Next</span>
-						<svg
-							class="h-5 w-5"
-							viewBox="0 0 20 20"
-							fill="currentColor"
-							aria-hidden="true"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-								clip-rule="evenodd"
-							/>
-						</svg>
-					</button>
-				</nav>
-			{/if}
-
-			{#if categories}
+					Terpantau! - Pantau CCTV
+				</h1>
+				<p class="lg:w-2/3 mx-auto leading-relaxed text-base">
+					stream CCTV bersumber dari website pemerintah kota maupun
+					provinsi indonesia yang tersedia secara publik.
+				</p>
+			</div>
+			<div class="w-full flex justify-center mb-3 md:mb-6">
 				<select
-					on:change={selectCategory}
-					id="category"
-					value={selectedCategory}
+					on:change={selectWilayah}
+					id="wilayah"
+					bind:value={selectedWilayah}
 					class="bg-gray-50 border border-gray-300"
 				>
-					{#each categories as category}
-						<option value={category.id}>{category.name}</option>
+					{#each wilayahs.sort() as wilayah}
+						<option value={wilayah}>{wilayah}</option>
 					{/each}
 				</select>
-			{/if}
+			</div>
+			<div
+				class="w-full flex flex-row justify-center items-center mb-10 md:mb-20"
+			>
+				{#if data && data.paginate}
+					<nav
+						class="isolate inline-flex -space-x-px rounded-md shadow-sm"
+						aria-label="Pagination"
+					>
+						<button
+							on:click={prev}
+							class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+						>
+							<span class="sr-only">Previous</span>
+							<svg
+								class="h-5 w-5"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								aria-hidden="true"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						</button>
+	
+						<button
+							on:click={next}
+							class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+						>
+							<span class="sr-only">Next</span>
+							<svg
+								class="h-5 w-5"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								aria-hidden="true"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						</button>
+					</nav>
+				{/if}
+	
+				{#if categories}
+					<select
+						on:change={selectCategory}
+						id="category"
+						value={selectedCategory}
+						class="bg-gray-50 border border-gray-300"
+					>
+						{#each categories as category}
+							<option value={category.id}>{category.name}</option>
+						{/each}
+					</select>
+				{/if}
+			</div>
+			<div></div>
+			<div data-sveltekit-reload class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+				{#if data}
+					{#each data.data as item}
+						<Item {item} source={data.source} />
+					{/each}
+				{:else}
+					<p class="loading">loading...</p>
+				{/if}
+			</div>
 		</div>
-		<div></div>
-		<div data-sveltekit-reload class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-			{#if data}
-				{#each data.data as item}
-					<Item {item} source={data.source} />
-				{/each}
-			{:else}
-				<p class="loading">loading...</p>
-			{/if}
-		</div>
-	</div>
-</section>
+	</section>
+</main>
