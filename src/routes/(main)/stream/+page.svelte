@@ -82,24 +82,10 @@
 </section>
 <section
     class="w-full flex flex-col md:flex-row gap-3"
-    style="height: 70vh;"
+    
 >
     <div class="w-full h-full relative md:w-2/3 p-2 bg-black flex justify-center items-center  video-stream-detail">
-        <!-- {#if streamInfo != undefined && streamInfo != null}
-            <video
-                controls
-                crossorigin
-                playsinline
-                class="w-full  "
-            >
-                <source src={streamLink} />
-            </video>
-        {:else}
-            <p>Loading...</p>
-        {/if} -->
-        <!-- <video name="media" class="stream__frame" id="video_stream" autoplay muted playsinline poster="https://vmssamarinda.iconpln.co.id:8443/mt/api/rest/v1/media?session=AYMAfP8KEOFwg8Ds1UExjWk1VvcCCekSFgoU5v9_dWIirrX3qCM7NVtkQOoF1zQaEAK1f5vl_EV7ssdxdYw0vdMiEG4SCpxUgk9ivN4Jozv2qgkqEFBlbWtvdCBTYW1hcmluZGEyIRoQTZ6shHLARv-_iI3yRVfLVyoNYWRtaW5pc3RyYXRvcg&amp;cameraId=4xIx1DOxSE00M040NE9LMddLTsw1MBASEE7vKs8odvBuM3dQEV72LA4A&amp;format=jpeg&amp;frames=all&amp;media=video&amp;quality=high&amp;t=live" src="https://vmssamarinda.iconpln.co.id:8443/mt/api/rest/v1/media?session=AYMAfP8KEOFwg8Ds1UExjWk1VvcCCekSFgoU5v9_dWIirrX3qCM7NVtkQOoF1zQaEAK1f5vl_EV7ssdxdYw0vdMiEG4SCpxUgk9ivN4Jozv2qgkqEFBlbWtvdCBTYW1hcmluZGEyIRoQTZ6shHLARv-_iI3yRVfLVyoNYWRtaW5pc3RyYXRvcg&amp;cameraId=4xIx1DOxSE00M040NE9LMddLTsw1MBASEE7vKs8odvBuM3dQEV72LA4A&amp;format=fmp4&amp;frames=all&amp;media=video&amp;quality=high&amp;t=live" type="video/fmp4">
-        </video> -->
-        <Player streamInfo={streamInfo}  preview={true} id={"stream"}/>
+        <Player streamInfo={streamInfo} id={"stream"}/>
         
     </div>
     <div class="w-full md:w-1/3 p-2 sm:relative flex flex-col">
@@ -107,11 +93,11 @@
             <p>Chat</p>
         </div>
         <div
-            class="w-full overflow-y-auto"
-            style="max-height: 60vh;"
+            class="w-full overflow-y-auto pb-8 pt-4"
+            style="max-height: calc(40vh + 10vw);"
             id="list-chats"
         >
-            <ul class="flex flex-col gap-2">
+            <ul class="flex flex-col gap-2" >
                 {#each chatMessages as message}
                     <li class="mx-3 bg-gray-100 p-3 rounded-lg">
                         <p class="text-sm text-gray-800">{message}</p>

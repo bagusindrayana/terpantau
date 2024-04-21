@@ -197,13 +197,13 @@
 
 {#if streamInfo != undefined && streamInfo != null && streamLink != undefined && streamLink != null}
         {#if streamInfo.type == "image"}
-            <img src={streamLink} alt="stream image" class="w-full video-stream-detail" />
+            <img src={streamLink} alt="stream image" class="w-full " />
         {:else}
             <video id="video-{id}"
                 controls
                 crossorigin="true"
                 playsinline
-                class="w-full video-stream-detail"
+                class="w-full "
             >
                 <source src={streamLink} />
             </video>

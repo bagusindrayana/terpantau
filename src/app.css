@@ -16,3 +16,25 @@
         height: 35vh !important;
     }
 }
+
+.plyr {
+    height: 100%;
+    width: 100%;
+}
+
+#wrapper {
+    display: flex;
+    justify-content: center;
+    width: 900px;
+    height: 500px;
+    background-color: green;
+}
+
+.plyr__video-wrapper {
+    height: 100%;
+}
+
+.plyr__video-wrapper iframe {
+    width: 100%;
+    height: 100%;
+}
