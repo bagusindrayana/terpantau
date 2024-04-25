@@ -17,7 +17,7 @@
                 Sekarang hanya beberapa wilayah yang dapat di tampilkan di halaman ini, karena beberapa daerah juga masih belum memiliki akses publik CCTV.
             </li>
             <li>
-                Silahkan ajukan sumber CCTV yang ingin ditampilkan di halaman ini, dengan membuka issue di github repository <a href="https://github.com/bagusindrayana/terpantau" target="_blank">Pantau CCTV!.</a>
+                Silahkan ajukan sumber CCTV yang ingin ditampilkan di halaman ini, dengan membuka issue di github repository <a class="underline text-blue-600" href="https://github.com/bagusindrayana/terpantau" target="_blank">Pantau CCTV!.</a>
             </li>
         </ul>
         <h1 class="text-2xl font-bold my-2">Privacy Policy / Kebijakan Privasi</h1>
