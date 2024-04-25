@@ -95,7 +95,7 @@
             <source src={streamLink} />
         </video> -->
         <!-- <Player streamInfo={item}  preview={true} id={id}/> -->
-        <img src="{PUBLIC_API_THUMBNAIL+encodeURIComponent(item.stream)}" class="w-full h-full"/>
+        <img src="{PUBLIC_API_THUMBNAIL+encodeURIComponent(item.stream)}" onerror="this.src='/cctv-placeholder.png'" class="h-full"/>
     </div>
     <div class="w-full p-4">
         <div class="px-6 py-4">
