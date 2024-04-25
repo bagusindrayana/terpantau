@@ -20,7 +20,7 @@
   
   <nav data-sveltekit-reload class="w-full flex gap-3 px-4 py-2 bg-gray-500 text-white">
     <a href="/" class="hover:underline">Home</a>
-    <a href="#" class="hover:underline">About</a>
+    <a href="/about" class="hover:underline">About</a>
     <div class="dropdown  md:relative">
       <button class="relative z-10 block" on:click={() => dropdownOpen = !dropdownOpen}>
         Wilayah
